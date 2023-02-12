@@ -1,0 +1,8 @@
+server:
+  port: 5556
+
+spring:
+  application:
+    name: DynamicTable
+  jpa:
+    show-sql: true
