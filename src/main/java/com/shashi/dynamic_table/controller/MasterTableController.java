@@ -20,4 +20,14 @@ public class MasterTableController {
     public String createMaster(@RequestBody DynamicTable dynamicTable){
         return masterTableService.createMaster(dynamicTable);
     }
+
+    @PostMapping("/addcolumn")
+    public String addTableColumns(@RequestBody DynamicTable dynamicTable){
+        return masterTableService.updateMaster(dynamicTable);
+    }
+
+    @PostMapping("/removecolumn")
+    public String removeTableColumns(@RequestBody DynamicTable dynamicTable){
+        return masterTableService.removeTableColumns(dynamicTable);
+    }
 }

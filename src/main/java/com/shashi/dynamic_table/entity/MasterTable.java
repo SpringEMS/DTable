@@ -21,4 +21,9 @@ public class MasterTable {
 
     private String columnDataType;
 
+    public MasterTable(String tableName, String columnName, String columnDataType) {
+        this.tableName = tableName;
+        this.columnName = columnName;
+        this.columnDataType = columnDataType;
+    }
 }
