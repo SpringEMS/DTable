@@ -2,15 +2,18 @@ package com.shashi.dynamic_table.repo;
 
 import com.shashi.dynamic_table.dao.ColumnValue;
 import com.shashi.dynamic_table.dao.DynamicTable;
+import com.shashi.dynamic_table.entity.ColumnTable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class MasterTableRepositoryCustomImpl implements MasterTableRepositoryCustom{
+public class MasterTableRepositoryCustomImpl implements MasterTableRepositoryCustom {
 
     @Autowired
     private EntityManagerFactory emf;
@@ -33,8 +36,8 @@ public class MasterTableRepositoryCustomImpl implements MasterTableRepositoryCus
         for(ColumnValue cv : cvs){
             i++;
             String colType = cv.columnType;
-            if(colType.equalsIgnoreCase("varchar")){
-                colType = colType +"(255)";
+            if(!colType.equalsIgnoreCase("date")){
+                colType = colType +"("+ cv.getColumnSize()+")";
             }else{
                 colType = colType +" ";
             }
@@ -101,6 +104,49 @@ public class MasterTableRepositoryCustomImpl implements MasterTableRepositoryCus
         System.out.println(tableCreationQuery.toString());
         jdbcTemplate.execute(tableCreationQuery.toString());
         return "Columns in "+ tableName+" "+"removed Successfully with Query: \n"+ tableCreationQuery.toString();
+    }
+
+    @Override
+    public String insertIntoTable(HashMap<Object, Object> request, List<ColumnTable> columnTableList) {
+        String tableName = request.get("table").toString();
+        HashMap<String,String> columnValuesMap = (HashMap<String, String>) request.get("columnValues");
+        //Create HashMap
+        HashMap<String,String> columnNameAndType = new HashMap<>();
+        for(ColumnTable ct : columnTableList){
+            columnNameAndType.put(ct.getColumnName(),ct.getColumnDataType());
+        }
+        StringBuilder keyBuilder = new StringBuilder();
+        keyBuilder.append("(");
+        for(String name : columnValuesMap.keySet()){
+            keyBuilder.append(name+" ,");
+        }
+        keyBuilder.deleteCharAt(keyBuilder.length()-1).append(")");
+
+        StringBuilder valueBuilder = new StringBuilder();
+        valueBuilder.append("(");
+        for(String name : columnValuesMap.values()){
+            valueBuilder.append("'"+name+"',");
+        }
+        valueBuilder.deleteCharAt(valueBuilder.length()-1).append(")");
+
+
+        for (Map.Entry<String,String> entry : columnValuesMap.entrySet()){
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+        }
+
+        StringBuilder qy = new StringBuilder();
+        qy.append("INSERT INTO ")
+                .append(tableName)
+                .append(" ")
+                .append(keyBuilder)
+                .append(" values ")
+                .append(valueBuilder)
+                .append(";");
+        System.out.println(qy);
+        jdbcTemplate.execute(qy.toString());
+        return "Values inserted into table "+ tableName+ "with query: "+ qy.toString();
     }
 
     private void createTableWithQuery(String myQuery) {

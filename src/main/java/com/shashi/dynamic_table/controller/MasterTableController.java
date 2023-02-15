@@ -3,11 +3,11 @@ package com.shashi.dynamic_table.controller;
 import com.shashi.dynamic_table.dao.DynamicTable;
 import com.shashi.dynamic_table.entity.MasterTable;
 import com.shashi.dynamic_table.service.MasterTableService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/master")
@@ -29,5 +29,10 @@ public class MasterTableController {
     @PostMapping("/removecolumn")
     public String removeTableColumns(@RequestBody DynamicTable dynamicTable){
         return masterTableService.removeTableColumns(dynamicTable);
+    }
+
+    @GetMapping("/getall")
+    public List<MasterTable> getAllTables(){
+        return masterTableService.getAllTables();
     }
 }

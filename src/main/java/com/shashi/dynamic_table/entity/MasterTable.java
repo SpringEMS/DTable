@@ -3,7 +3,9 @@ package com.shashi.dynamic_table.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity(name = "MasterTable")
+import java.util.List;
+
+@Entity(name = "X_MasterTable")
 @Getter
 @Setter
 @Builder
@@ -12,18 +14,17 @@ import lombok.*;
 public class MasterTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    @Column(name = "table_id", nullable = false)
+    private Integer table_id;
 
     private String tableName;
 
-    private String columnName;
+    @OneToMany(cascade = CascadeType.ALL ,
+            orphanRemoval = true ,
+            mappedBy = "table_id")
+    private List<ColumnTable> columnTableList;
 
-    private String columnDataType;
-
-    public MasterTable(String tableName, String columnName, String columnDataType) {
+    public MasterTable(String tableName) {
         this.tableName = tableName;
-        this.columnName = columnName;
-        this.columnDataType = columnDataType;
     }
 }
