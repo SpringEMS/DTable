@@ -89,16 +89,16 @@ public class MasterTableRepositoryCustomImpl implements MasterTableRepositoryCus
         StringBuilder columnValues = new StringBuilder();
         tableCreationQuery.append("ALTER TABLE ");
         tableCreationQuery.append(tableName).append(" ");
-        tableCreationQuery.append("DROP COLUMN ");
+//        tableCreationQuery.append("DROP ");
         List<ColumnValue> cvs = dynamicTable.getColumnValues();
         int len = cvs.size();
         int i=0;
         for(ColumnValue cv : cvs){
             i++;
             if(i !=len){
-                tableCreationQuery.append(cv.columnName).append(" ,");
+                tableCreationQuery.append("DROP ").append(cv.columnName).append(" ,");
             }else{
-                tableCreationQuery.append(cv.columnName).append(" ;");
+                tableCreationQuery.append("DROP ").append(cv.columnName).append(" ;");
             }
         }
         System.out.println(tableCreationQuery.toString());
