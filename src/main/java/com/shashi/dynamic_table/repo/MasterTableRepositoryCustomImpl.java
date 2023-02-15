@@ -66,8 +66,8 @@ public class MasterTableRepositoryCustomImpl implements MasterTableRepositoryCus
         for(ColumnValue cv : cvs){
             i++;
             String colType = cv.columnType;
-            if(colType.equalsIgnoreCase("varchar")){
-                colType = colType +"(255)";
+            if(!colType.equalsIgnoreCase("date")){
+                colType = colType +"("+ cv.getColumnSize()+")";
             }else{
                 colType = colType +" ";
             }
@@ -109,32 +109,34 @@ public class MasterTableRepositoryCustomImpl implements MasterTableRepositoryCus
     @Override
     public String insertIntoTable(HashMap<Object, Object> request, List<ColumnTable> columnTableList) {
         String tableName = request.get("table").toString();
-        HashMap<String,String> columnValuesMap = (HashMap<String, String>) request.get("columnValues");
+        HashMap<String,Object> columnValuesMap = (HashMap<String, Object>) request.get("columnValues");
         //Create HashMap
-        HashMap<String,String> columnNameAndType = new HashMap<>();
+        HashMap<String,String> columnNameAndTypeMap = new HashMap<>();
         for(ColumnTable ct : columnTableList){
-            columnNameAndType.put(ct.getColumnName(),ct.getColumnDataType());
+            columnNameAndTypeMap.put(ct.getColumnName(),ct.getColumnDataType());
         }
+
         StringBuilder keyBuilder = new StringBuilder();
         keyBuilder.append("(");
-        for(String name : columnValuesMap.keySet()){
-            keyBuilder.append(name+" ,");
-        }
-        keyBuilder.deleteCharAt(keyBuilder.length()-1).append(")");
-
         StringBuilder valueBuilder = new StringBuilder();
         valueBuilder.append("(");
-        for(String name : columnValuesMap.values()){
-            valueBuilder.append("'"+name+"',");
-        }
-        valueBuilder.deleteCharAt(valueBuilder.length()-1).append(")");
-
-
-        for (Map.Entry<String,String> entry : columnValuesMap.entrySet()){
+        for (Map.Entry<String,Object> entry : columnValuesMap.entrySet()){
             String key = entry.getKey();
-            String value = entry.getValue();
-
+            String value = entry.getValue().toString();
+            keyBuilder.append(key).append(" ,");
+            if(columnNameAndTypeMap.get(key).equalsIgnoreCase("varchar")){
+                valueBuilder.append("'").append(value).append("',");
+            }else{
+                if(value.equalsIgnoreCase("")){
+                    valueBuilder.append("''").append(",");
+                }else{
+                    valueBuilder.append(value).append(",");
+                }
+            }
         }
+
+        keyBuilder.deleteCharAt(keyBuilder.length()-1).append(")");
+        valueBuilder.deleteCharAt(valueBuilder.length()-1).append(")");
 
         StringBuilder qy = new StringBuilder();
         qy.append("INSERT INTO ")

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MasterMasterTableRepository extends
+public interface MasterTableRepository extends
         JpaRepository<MasterTable, Integer>, MasterTableRepositoryCustom {
 
     MasterTable findByTableName(String tableName);

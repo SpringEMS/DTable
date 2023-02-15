@@ -5,7 +5,7 @@ import com.shashi.dynamic_table.dao.DynamicTable;
 import com.shashi.dynamic_table.entity.ColumnTable;
 import com.shashi.dynamic_table.entity.MasterTable;
 import com.shashi.dynamic_table.repo.ColumnTableRepository;
-import com.shashi.dynamic_table.repo.MasterMasterTableRepository;
+import com.shashi.dynamic_table.repo.MasterTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.List;
 public class MasterTableService {
 
     @Autowired
-    private MasterMasterTableRepository masterTablerepository;
+    private MasterTableRepository masterTablerepository;
 
     @Autowired
     private ColumnTableRepository columnTableRepository;
@@ -46,7 +46,14 @@ public class MasterTableService {
     }
 
     public String updateMaster(DynamicTable dynamicTable) {
-        insertInMaster(dynamicTable);
+        MasterTable masterTable = masterTablerepository.findByTableName(dynamicTable.getTable());
+        Integer tableId = masterTable.getTable_id();
+        List<ColumnValue> cvs = dynamicTable.getColumnValues();
+        List<ColumnTable> columnTableList = new ArrayList<>();
+        for(ColumnValue cv : cvs){
+            columnTableList.add(new ColumnTable(cv.getColumnName(),cv.getColumnType(),cv.getColumnSize(),tableId));
+        }
+        insertInColumnTable(columnTableList);
         return masterTablerepository.addColumnInTable(dynamicTable);
     }
 
@@ -56,7 +63,14 @@ public class MasterTableService {
     }
 
     private void DeleteInMaster(DynamicTable dynamicTable) {
-
+        MasterTable masterTable = masterTablerepository.findByTableName(dynamicTable.getTable());
+        Integer tableId = masterTable.getTable_id();
+        List<ColumnValue> cvs = dynamicTable.getColumnValues();
+        ArrayList<String> coulmnNames = new ArrayList<>();
+        for(ColumnValue cv : cvs){
+            coulmnNames.add(cv.getColumnName());
+        }
+        columnTableRepository.deleteSelectedColumns(tableId, coulmnNames);
     }
 
     public List<MasterTable> getAllTables() {

@@ -3,8 +3,7 @@ package com.shashi.dynamic_table.service;
 import com.shashi.dynamic_table.entity.ColumnTable;
 import com.shashi.dynamic_table.entity.MasterTable;
 import com.shashi.dynamic_table.repo.ColumnTableRepository;
-import com.shashi.dynamic_table.repo.MasterMasterTableRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
+import com.shashi.dynamic_table.repo.MasterTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +14,7 @@ import java.util.List;
 public class TableService {
 
     @Autowired
-    private MasterMasterTableRepository masterTableRepository;
+    private MasterTableRepository masterTableRepository;
 
     @Autowired
     private ColumnTableRepository columnTableRepository;
