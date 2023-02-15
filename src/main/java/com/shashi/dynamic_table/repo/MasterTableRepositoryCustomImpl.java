@@ -86,10 +86,7 @@ public class MasterTableRepositoryCustomImpl implements MasterTableRepositoryCus
     public String removeTableColumns(DynamicTable dynamicTable) {
         StringBuilder tableCreationQuery = new StringBuilder();
         String tableName = dynamicTable.getTable();
-        StringBuilder columnValues = new StringBuilder();
         tableCreationQuery.append("ALTER TABLE ");
-        tableCreationQuery.append(tableName).append(" ");
-//        tableCreationQuery.append("DROP ");
         List<ColumnValue> cvs = dynamicTable.getColumnValues();
         int len = cvs.size();
         int i=0;
@@ -123,12 +120,10 @@ public class MasterTableRepositoryCustomImpl implements MasterTableRepositoryCus
         for (Map.Entry<String,Object> entry : columnValuesMap.entrySet()){
             String key = entry.getKey();
             String value = entry.getValue().toString();
-            keyBuilder.append(key).append(" ,");
-            if(columnNameAndTypeMap.get(key).equalsIgnoreCase("varchar")){
-                valueBuilder.append("'").append(value).append("',");
-            }else{
-                if(value.equalsIgnoreCase("")){
-                    valueBuilder.append("''").append(",");
+            if(!value.equalsIgnoreCase("")){
+                keyBuilder.append(key).append(" ,");
+                if(columnNameAndTypeMap.get(key).equalsIgnoreCase("varchar")){
+                    valueBuilder.append("'").append(value).append("',");
                 }else{
                     valueBuilder.append(value).append(",");
                 }
